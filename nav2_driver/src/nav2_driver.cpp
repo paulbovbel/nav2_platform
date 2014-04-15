@@ -65,7 +65,7 @@ protected:
             remote_.reset();
 
             //save odometry offset for new base connection odometry
-            Pose2D offset = base_odom_.getDist();
+            Pose2D offset = base_odom_.getPose();
             base_odom_ = BaseOdometry(offset);
         }
 
@@ -94,12 +94,9 @@ protected:
      */
     void publishOdometry(bool invert_odom, std::string robot_prefix){
 
-        //absolute robot position according to nav2
-        double rx, ry, rth;
-
         Pose2D meas;
 
-        //reset the connection until command succeeds
+        //get odometry from nav2 base, reconnect on error
         while(!remote_ || remote_->estimatePosition(meas.x, meas.y, meas.th) < 0){
             connect();
         }
@@ -120,7 +117,7 @@ protected:
         double vs = sqrt(pow(twist->linear.x,2) + pow(twist->linear.y,2));
         double vn = atan2(twist->linear.y,twist->linear.x) * (180 / M_PI);
 
-        //reset the connection until command succeeds
+        //send velocity command to nav2, reconnect on error
         while(!remote_ || remote_->setRelativeVelocity(vn, vs, twist->angular.z) < 0){
             connect();
         }
@@ -197,11 +194,17 @@ private:
             double elapsed = (ros::Time::now() - last_time_).toSec();
             last_time_ = ros::Time::now();
 
-            dist_ += delta;
+            pose_ += delta;
             vel_ = delta / elapsed;
 
         }
 
+        /**
+         * @brief Build transform from internal odometry state
+         * @param invert_odom Invert odometry for use with robot_pose_ekf
+         * @param robot_prefix Tf prefix to use with odom and base_link frame
+         * @return transform
+         */
         geometry_msgs::TransformStamped getTransform(bool invert_odom, std::string robot_prefix){
 
             //build transform message
@@ -209,7 +212,7 @@ private:
             transform.header.stamp = last_time_;
 
             //invert odometry if necessary
-            tf::Transform temp = tf::Transform(tf::createQuaternionFromYaw(dist_.th + offset_.th), tf::Vector3(dist_.x + offset_.x, dist_.y + offset_.y, 0));
+            tf::Transform temp = tf::Transform(tf::createQuaternionFromYaw(pose_.th + offset_.th), tf::Vector3(pose_.x + offset_.x, pose_.y + offset_.y, 0));
             if(invert_odom){
                 temp = temp.inverse();
                 transform.header.frame_id = robot_prefix + "base_footprint";
@@ -224,6 +227,11 @@ private:
 
         }
 
+        /**
+         * @brief Build Odometry message from internal odometry state
+         * @param robot_prefix Tf prefix to use with odom and base_link frame
+         * @return odometry message
+         */
         nav_msgs::Odometry getMessage(std::string robot_prefix){
 
             //build odometry message
@@ -232,10 +240,10 @@ private:
             message.header.stamp = last_time_;
             message.header.frame_id = robot_prefix + "odom";
             message.child_frame_id = robot_prefix + "base_link";
-            message.pose.pose.position.x = dist_.x + offset_.x;
-            message.pose.pose.position.y = dist_.y + offset_.y;
+            message.pose.pose.position.x = pose_.x + offset_.x;
+            message.pose.pose.position.y = pose_.y + offset_.y;
             message.pose.pose.position.z = 0.0;
-            message.pose.pose.orientation = tf::createQuaternionMsgFromYaw(dist_.th + offset_.th);
+            message.pose.pose.orientation = tf::createQuaternionMsgFromYaw(pose_.th + offset_.th);
             message.pose.covariance[0] = 10^-3;
             message.pose.covariance[7] = 10^-3;
             message.pose.covariance[14] = 10^6;
@@ -257,13 +265,17 @@ private:
 
         }
 
-        Pose2D getDist(){
-            return dist_;
+        /**
+         * @brief Get current odometry pose
+         * @return current odometry pose
+         */
+        Pose2D getPose(){
+            return pose_;
         }
 
     private:
 
-        Pose2D dist_, vel_, prev_, offset_;
+        Pose2D pose_, vel_, prev_, offset_;
         ros::Time last_time_;
 
     };
