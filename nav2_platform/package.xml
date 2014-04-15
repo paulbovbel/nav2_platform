@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>nav2_platform</name>
+  <version>0.0.0</version>
+  <description>The nav2_platform package</description>
+
+  <maintainer email="paul@todo.todo">paul</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>nav2_bringup</build_depend>
+  <build_depend>nav2_driver</build_depend>
+  <build_depend>nav2_navigation</build_depend>
+  <run_depend>nav2_bringup</run_depend>
+  <run_depend>nav2_driver</run_depend>
+  <run_depend>nav2_navigation</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>

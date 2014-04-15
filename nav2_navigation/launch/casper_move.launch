@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="use_global_map" default="false"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="map_odom_tf" args="0 0 0 0 0 0 map odom 100" unless="$(arg use_global_map)"/>
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+
+    <rosparam>
+      controller_frequency: 5.0
+      recovery_behaviour_enabled: false
+
+      base_global_planner: navfn/NavfnROS
+      
+      ## Planner Selection:
+      #base_local_planner: base_local_planner/TrajectoryPlannerROS
+      base_local_planner: dwa_local_planner/DWAPlannerROS
+    </rosparam>
+
+    <!-- local planner parameters -->
+    <rosparam ns="TrajectoryPlannerROS">
+      max_vel_x: 0.2
+      min_vel_x: 0.0
+      y_vels: [-0.2,-0.0,0.0,0.2]
+      max_rotational_vel: 0.6
+      min_in_place_rotational_vel: 0.15
+
+      acc_lim_th: 3.2
+      acc_lim_x: 2.5
+      acc_lim_y: 2.5
+
+      yaw_goal_tolerance: 0.3
+      xy_goal_tolerance: 0.2
+
+      holonomic_robot: true
+      
+      dwa: true
+    </rosparam>
+    <rosparam ns="DWAPlannerROS">
+
+      acc_lim_th: 3.2
+      acc_lim_x: 2.5
+      acc_lim_y: 2.5
+      max_trans_vel: 0.55
+      min_trans_vel: 0.0
+
+      max_vel_x: 0.2
+      min_vel_x: 0.0
+      max_vel_y: 0.1
+      min_vel_y: -0.1
+      max_rot_vel: 0.5
+      min_rot_vel: 0.15
+
+      yaw_goal_tolerance: 0.3
+      xy_goal_tolerance: 0.2
+
+    </rosparam>
+
+    <!-- most observation sources located in costmap_common.yaml -->
+    <rosparam file="$(find casper_navigation)/config/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find casper_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+
+    <!-- local costmap is always dynamic -->
+    <rosparam file="$(find casper_navigation)/config/costmap_dynamic.yaml" command="load" ns="local_costmap" />
+    <rosparam ns="local_costmap">    
+      #Local costmap size
+      width: 4.0
+      height: 4.0
+    </rosparam>
+
+    <!-- global costmap is static or dynamic depending on global settings -->
+    <rosparam file="$(find casper_navigation)/config/costmap_static.yaml" command="load" ns="global_costmap" if="$(arg use_global_map)"/>
+    <rosparam ns="global_costmap" unless="$(arg use_global_map)">
+      #Global costmap size if no static map      
+      width: 15.0
+      height: 15.0 
+    </rosparam>
+    <rosparam file="$(find casper_navigation)/config/costmap_dynamic.yaml" command="load" ns="global_costmap"  unless="$(arg use_global_map)"/>
+
+  </node>
+</launch>
