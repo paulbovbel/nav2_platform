@@ -94,7 +94,7 @@ protected:
      */
     void publishOdometry(bool invert_odom, std::string robot_prefix){
 
-        //get odometry from nav2 base, reconnect on error
+        //get odometry from Nav2, reconnect on error
         Pose2D data;
         while(!remote_ || remote_->estimatePosition(data.x, data.y, data.th) < 0){
             connect(robot_address_, robot_port_);
@@ -117,7 +117,7 @@ protected:
         double vs = sqrt(pow(twist->linear.x,2) + pow(twist->linear.y,2));
         double vn = atan2(twist->linear.y,twist->linear.x) * (180 / M_PI);
 
-        //send velocity command to nav2, reconnect on error
+        //send velocity command to Nav2, reconnect on error
         while(!remote_ || remote_->setRelativeVelocity(vn, vs, twist->angular.z) < 0){
             connect(robot_address_, robot_port_);
         }
@@ -163,7 +163,6 @@ private:
         inline Pose2D& operator +(const Pose2D& other) { return *this += other; }
         inline Pose2D& operator -(const Pose2D& other) { return *this -= other; }
         inline Pose2D& operator /(const double& other) { return *this /= other; }
-
 
     };
 
