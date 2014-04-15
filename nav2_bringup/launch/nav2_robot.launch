@@ -6,6 +6,7 @@
 
 <include file="$(find nav2_driver)/launch/nav2_driver.launch">
    <arg name="robot_address" />
+   <arg name="robot_port" default="5010"/>
 </include>
 
 <include file="$(find nav2_navigation)/launch/nav2_move_base.launch">
