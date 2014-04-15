@@ -143,7 +143,7 @@ private:
             x -= other.x;
             y -= other.y;
 
-            //detect rollover
+            //detect rollover during velocity calculation
             if(abs(th - other.th) > M_PI){
                 if(other.th>0){
                     th += 2*M_PI;
