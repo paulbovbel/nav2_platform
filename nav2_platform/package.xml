@@ -2,11 +2,12 @@
 <package>
   <name>nav2_platform</name>
   <version>0.0.0</version>
-  <description>The nav2_platform package</description>
+  <description>ROS Metapackage containing all nodes, config, and launch files for Nav2 Robot Platform</description>
 
-  <maintainer email="paul@todo.todo">paul</maintainer>
+  <maintainer email="paul@bovbel.com">Paul Bovbel</maintainer>
+  <author email="paul@bovbel.com">Paul Bovbel</author>
 
-  <license>TODO</license>
+  <license>GPLv3</license>
 
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>nav2_bringup</run_depend>

@@ -1,0 +1,16 @@
+global_frame: odom
+rolling_window: true
+track_unknown_space: true
+raytrace_range: 6.0
+obstacle_range: 3.5
+
+plugins: 
+    - {name: obstacles,                 type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation,                 type: "costmap_2d::InflationLayer"}
+
+obstacles:
+    observation_sources: laser
+    laser: {data_type: LaserScan, clearing: true, marking: true, topic: scan, inf_is_valid: true}
+
+inflation:
+    inflation_radius: 0.20

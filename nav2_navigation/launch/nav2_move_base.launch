@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<launch>
+
+   <arg name="use_external_map" default="false"/>
+
+   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+
+      <rosparam>
+         controller_frequency: 5.0
+
+         ## Planner Selection:
+         base_global_planner: navfn/NavfnROS
+         base_local_planner: dwa_local_planner/DWAPlannerROS
+
+      </rosparam>
+
+      <!-- local planner parameters -->
+      <rosparam file="$(find nav2_navigation)/config/dwa_planner.yaml" command="load" ns="DWAPlannerROS">
+
+      </rosparam>
+
+      <!-- global and local common parameters -->
+      <rosparam file="$(find nav2_navigation)/config/costmap_common.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find nav2_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+
+      <!-- local costmap is always dynamic -->
+      <rosparam file="$(find casper_navigation)/config/costmap_dynamic.yaml" command="load" ns="local_costmap" />
+      <rosparam ns="local_costmap">    
+         #Local costmap size
+         width: 4.0
+         height: 4.0
+      </rosparam>
+
+      <!-- global costmap is static or dynamic depending on global settings -->
+      <rosparam file="$(find casper_navigation)/config/costmap_static.yaml" command="load" ns="global_costmap" if="$(arg use_external_map)"/>
+
+      <rosparam ns="global_costmap" unless="$(arg use_external_map)">
+         #Global costmap size if no static map      
+         width: 15.0
+         height: 15.0 
+      </rosparam>
+      <rosparam file="$(find casper_navigation)/config/costmap_dynamic.yaml" command="load" ns="global_costmap"  unless="$(arg use_external_map)"/>
+
+   </node>
+</launch>

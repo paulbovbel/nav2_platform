@@ -19,15 +19,15 @@ add_library(nav2remote include/nav2remote/nav2remote.cpp)
 add_executable(nav2_driver src/nav2_driver.cpp)
 target_link_libraries(nav2_driver nav2remote ${catkin_LIBRARIES})
 
-install(TARGETS nav2_driver
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
 install(TARGETS nav2remote
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
 
-install(DIRECTORY include/${PROJECT_NAME}/
+install(TARGETS nav2_driver
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+install(DIRECTORY include/nav2remote/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
         PATTERN ".svn" EXCLUDE)
 

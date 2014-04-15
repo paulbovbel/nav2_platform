@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<launch>
+
+<arg name="use_external_map" default="false"/>
+
+<include file="$(find nav2_driver)/launch/nav2_driver.launch">
+   <arg name="robot_address" />
+</include>
+
+<include file="$(find nav2_navigation)/launch/nav2_move_base.launch">
+  <arg name="use_external_map" default="$(arg use_external_map)"/>
+</include>
+
+<!--
+
+  Add code to connect your sensor here, for example for a hokuyo laserscanner:
+
+    <node pkg="tf" type="static_transform_publisher" name="laser_link_tf" args="x y z yaw pitch roll base_link base_laser 100" />
+
+    <node pkg="hokuyo_node" type="hokuyo_node" name="hokuyo_node" output="screen" respawn="true" >
+      <param name="port" value="/dev/hokuyo" />
+      <param name="calibrate_time" value="true" />
+      <param name="frame_id" value="base_laser" />  
+    </node>
+
+  Or an openni(2) sensor:
+
+    <node pkg="tf" type="static_transform_publisher" name="camera_link_tf" args="x y z yaw pitch roll base_link camera_base_link 100" />
+
+    <include file="$(find openni_launch)/launch/openni.launch"/> OR
+    <include file="$(find openni2_launch)/launch/openni2.launch"/>
+
+    <node name="depthimage_to_laserscan" type="depthimage_to_laserscan" pkg="depthimage_to_laserscan">
+      <remap from="image" to="camera/depth/image_raw"/>
+    </node>
+
+-->
+
+</launch>

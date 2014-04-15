@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="map_path"/>
+
+  <include file="$(find nav2_bringup)/launch/nav2_robot.launch">
+    <arg name="use_external_map" default="true"/>
+  </include>
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_path)"/>
+
+  <node pkg="amcl" type="amcl" name="amcl">
+    <remap from="map" to="/map"/>
+    <rosparam>
+      min_particles: 200
+      max_particles: 7000
+      kld_err: 0.01
+      kld_z: 0.99
+
+      resample_interval: 2
+      transform_tolerance: 0.4
+      recovery_alpha_slow: 0.0
+      recovery_alpha_fast: 0.0
+      gui_publish_rate: -1.0
+      save_pose_rate: 0.5
+      use_map_topic: true
+      first_map_only: false
+
+      laser_max_beams: 60
+      laser_likelihood_max_dist: 2.0
+      laser_model_type: likelihood_field
+
+      odom_model_type: omni
+      odom_alpha1: 0.5
+      odom_alpha2: 0.2
+      odom_alpha3: 0.2
+      odom_alpha4: 0.2
+      odom_alpha5: 0.2
+
+      base_frame_id: base_link
+      odom_frame_id: odom
+      global_frame_id: map
+
+      laser_z_hit: 0.5
+      laser_z_short: 0.05
+      laser_z_max: 0.05
+      laser_z_rand: 0.5
+      laser_sigma_hit: 0.2
+      laser_lambda_short: 0.1
+      update_min_d: 0.25
+      update_min_a: 0.2
+    </rosparam> 
+
+    <remap from="scan"                      to="$(arg scan_topic)"/>
+  </node>
+
+
+</launch>
+
