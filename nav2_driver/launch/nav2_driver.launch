@@ -3,14 +3,14 @@
 <launch>
 
 <arg name="robot_address" />
-
+<arg name="robot_address" default="5010"/>
 <arg name="robot_name" default="" />
 <arg name="invert_odom" default="false" />
 
 <node name="nav2_driver" pkg="nav2_driver" type="nav2_driver" output="screen">
   <param name="robot_name" value="$(arg robot_name)"/>  
   <param name="robot_address" value="$(arg robot_address)"/>
-  <param name="robot_port" value="5010"/>
+  <param name="robot_port" value="$(arg robot_port)"/>
   <param name="invert_odom" value="$(arg invert_odom)"/>
 </node>
 
