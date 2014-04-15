@@ -2,8 +2,8 @@
 Changelog for package nav2_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2014-04-15)
+------------------
 * fix dependencies
 * update documentation
 * add nav2remote module
