@@ -9,9 +9,6 @@
   <license>TODO</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>nav2_bringup</build_depend>
-  <build_depend>nav2_driver</build_depend>
-  <build_depend>nav2_navigation</build_depend>
   <run_depend>nav2_bringup</run_depend>
   <run_depend>nav2_driver</run_depend>
   <run_depend>nav2_navigation</run_depend>

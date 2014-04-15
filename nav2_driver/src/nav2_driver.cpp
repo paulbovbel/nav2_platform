@@ -267,8 +267,6 @@ private:
 
     };
 
-private:
-
     ros::NodeHandle nh_;
     ros::NodeHandle private_nh_;
     tf::TransformBroadcaster tf_broadcaster_;
