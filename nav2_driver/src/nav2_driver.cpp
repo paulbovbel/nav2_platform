@@ -44,20 +44,21 @@ public:
         //get parameter for inverted odometry (for use with robot_pose_ekf)
         private_nh_.param<bool>("invert_odom", invert_odom_, false);
 
-        connect();
+        connect(robot_address_, robot_port_);
 
         odom_pub_ = nh_.advertise<nav_msgs::Odometry>("odom", 10);
         odom_loop_ = nh_.createTimer(ros::Duration(0.1), boost::bind(&Nav2Driver::publishOdometry, this, invert_odom_, robot_prefix_));
         cmd_sub_ = nh_.subscribe("cmd_vel", 5, &Nav2Driver::setVelocity, this);
-    }    
+    }
 
 protected:
 
     /**
      * @brief Establishes connection to Nav2 base controller, replacing any existing connection if necessary.
      */
-    void connect(){
+    void connect(std::string robot_address, int robot_port){
 
+        //check if already connected
         if(remote_){
             ROS_INFO("Resetting connection to Nav2 base");
             remote_.reset();
@@ -67,10 +68,12 @@ protected:
             base_odom_ = BaseOdometry(offset);
         }
 
+        //attepmt to connect several times
         for(int retry = 0; retry < 5; retry++){
             try{
-                remote_ = boost::shared_ptr<Nav2Remote>(new Nav2Remote(robot_address_.c_str(),robot_port_));
-                ROS_INFO_STREAM("Connected to Nav2 base on " << robot_address_ <<":"<< robot_port_);
+                //leave address:port validation to Nav2Remote. Must use shared_ptr since constructor can throw expception
+                remote_ = boost::shared_ptr<Nav2Remote>(new Nav2Remote(robot_address.c_str(),robot_port));
+                ROS_INFO_STREAM("Connected to Nav2 base on " << robot_address <<":"<< robot_port);
                 return;
             }catch(std::exception& e){
                 ROS_WARN_STREAM(e.what());
@@ -94,7 +97,7 @@ protected:
         //get odometry from nav2 base, reconnect on error
         Pose2D meas;
         while(!remote_ || remote_->estimatePosition(meas.x, meas.y, meas.th) < 0){
-            connect();
+            connect(robot_address_, robot_port_);
         }
 
         base_odom_.updateWithAbsolute(meas);
@@ -115,7 +118,7 @@ protected:
 
         //send velocity command to nav2, reconnect on error
         while(!remote_ || remote_->setRelativeVelocity(vn, vs, twist->angular.z) < 0){
-            connect();
+            connect(robot_address_, robot_port_);
         }
     }
 
