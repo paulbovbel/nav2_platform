@@ -60,8 +60,6 @@ protected:
 
         if(remote_){
             ROS_INFO("Resetting connection to Casper Nav2 base");
-
-            //drop base connection
             remote_.reset();
 
             //save odometry offset for new base connection odometry
@@ -75,7 +73,7 @@ protected:
                 ROS_INFO_STREAM("Connected to Nav2 base on " << robot_address_ <<":"<< robot_port_);
                 return;
             }catch(std::exception& e){
-                ROS_ERROR_STREAM(e.what());
+                ROS_WARN_STREAM(e.what());
                 ros::Duration(0.2).sleep();
             }
         }
