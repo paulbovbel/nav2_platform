@@ -91,9 +91,8 @@ protected:
      */
     void publishOdometry(bool invert_odom, std::string robot_prefix){
 
-        Pose2D meas;
-
         //get odometry from nav2 base, reconnect on error
+        Pose2D meas;
         while(!remote_ || remote_->estimatePosition(meas.x, meas.y, meas.th) < 0){
             connect();
         }
