@@ -59,7 +59,7 @@ protected:
     void connect(){
 
         if(remote_){
-            ROS_INFO("Resetting connection to Casper Nav2 base");
+            ROS_INFO("Resetting connection to Nav2 base");
             remote_.reset();
 
             //save odometry offset for new base connection odometry
