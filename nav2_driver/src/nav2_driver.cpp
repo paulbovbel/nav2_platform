@@ -95,12 +95,13 @@ protected:
     void publishOdometry(bool invert_odom, std::string robot_prefix){
 
         //get odometry from nav2 base, reconnect on error
-        Pose2D meas;
-        while(!remote_ || remote_->estimatePosition(meas.x, meas.y, meas.th) < 0){
+        Pose2D data;
+        while(!remote_ || remote_->estimatePosition(data.x, data.y, data.th) < 0){
             connect(robot_address_, robot_port_);
         }
 
-        base_odom_.updateWithAbsolute(meas);
+        //update internal state, and publish required message/tf information
+        base_odom_.updateWithAbsolute(data);
         tf_broadcaster_.sendTransform(base_odom_.getTransform(invert_odom,robot_prefix));
         odom_pub_.publish(base_odom_.getMessage(robot_prefix));
 
