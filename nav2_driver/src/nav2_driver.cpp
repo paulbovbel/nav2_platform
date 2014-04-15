@@ -10,13 +10,21 @@
 
 namespace nav2_driver{
 
+/**
+ * @brief ROS Driver/Wrapper for nav2remote Remote API, implementing standard mobile robot subscribers, publishers, and tf frames as per REP 105.
+ */
 class Nav2Driver{
 
 public:
 
+    /**
+     * @brief Constructor for driver node
+     * @param name Name of node
+     */
     Nav2Driver(std::string name) :
         nh_(),
-        private_nh_("~")
+        private_nh_("~"),
+        robot_prefix_()
     {
 
         //get robot address and port
@@ -31,24 +39,24 @@ public:
         //get parameter for unique tf names
         std::string robot_name;
         private_nh_.param<std::string>("robot_name", robot_name, "");
-        robot_prefix_ = robot_name + "_";
+        if (!robot_name.empty()) { robot_prefix_ = robot_name + "_"; }
+
         //get parameter for inverted odometry (for use with robot_pose_ekf)
         private_nh_.param<bool>("invert_odom", invert_odom_, false);
 
         connect();
 
         odom_pub_ = nh_.advertise<nav_msgs::Odometry>("odom", 10);
-        odom_loop_ = nh_.createTimer(ros::Duration(0.1), boost::bind(&Nav2Driver::publishOdometry, this, invert_odom_));
+        odom_loop_ = nh_.createTimer(ros::Duration(0.1), boost::bind(&Nav2Driver::publishOdometry, this, invert_odom_, robot_prefix_));
         cmd_sub_ = nh_.subscribe("cmd_vel", 5, &Nav2Driver::setVelocity, this);
-    }
-
-    ~Nav2Driver(){
-        ROS_INFO("Disconnecting from Casper base");
-    }
+    }    
 
 protected:
 
-    bool connect(){
+    /**
+     * @brief Establishes connection to Nav2 base controller, replacing any existing connection if necessary.
+     */
+    void connect(){
 
         if(remote_){
             ROS_INFO("Resetting connection to Casper Nav2 base");
@@ -57,15 +65,15 @@ protected:
             remote_.reset();
 
             //save odometry offset for new base connection odometry
-            Pose2D offset = odom_measurement_.getDist();
-            odom_measurement_ = OdometryMeasurement(offset);
+            Pose2D offset = base_odom_.getDist();
+            base_odom_ = BaseOdometry(offset);
         }
 
         for(int retry = 0; retry < 5; retry++){
             try{
                 remote_ = boost::shared_ptr<Nav2Remote>(new Nav2Remote(robot_address_.c_str(),robot_port_));
                 ROS_INFO_STREAM("Connected to Nav2 base on " << robot_address_ <<":"<< robot_port_);
-                return true;
+                return;
             }catch(std::exception& e){
                 ROS_ERROR_STREAM(e.what());
                 ros::Duration(0.2).sleep();
@@ -78,7 +86,12 @@ protected:
 
     }
 
-    void publishOdometry(bool invert_odom){
+    /**
+     * @brief Retrieves latest odometry information from the base controller, and publishes appropriate message and transforms
+     * @param invert_odom Invert odometry for use with robot_pose_ekf
+     * @param robot_prefix Tf prefix to use with odom and base_link frame
+     */
+    void publishOdometry(bool invert_odom, std::string robot_prefix){
 
         //absolute robot position according to nav2
         double rx, ry, rth;
@@ -90,12 +103,16 @@ protected:
             connect();
         }
 
-        odom_measurement_.updateWithAbsolute(meas);
-        tf_broadcaster_.sendTransform(odom_measurement_.getTransform(invert_odom_,robot_prefix_));
-        odom_pub_.publish(odom_measurement_.getMessage(robot_prefix_));
+        base_odom_.updateWithAbsolute(meas);
+        tf_broadcaster_.sendTransform(base_odom_.getTransform(invert_odom,robot_prefix));
+        odom_pub_.publish(base_odom_.getMessage(robot_prefix));
 
     }
 
+    /**
+     * @brief Sets velocity goals for base controller
+     * @param twist Incoming velocity command from ROS
+     */
     void setVelocity(const geometry_msgs::TwistConstPtr& twist){
 
         //convert from vector velocity to relative angular velocity
@@ -110,6 +127,9 @@ protected:
 
 private:
 
+    /**
+     * @brief Internal structure for storing pose representation in 2D
+     */
     struct Pose2D{
 
         Pose2D() : x(0), y(0), th(0) {}
@@ -149,13 +169,23 @@ private:
 
     };
 
-    class OdometryMeasurement{
+    /**
+     * @brief Internal class for building and representing the base odometry state.
+     */
+    class BaseOdometry{
 
     public:
 
-        OdometryMeasurement(): offset_(), last_time_(ros::Time::now()) {}
+        /**
+         * @brief Initialize state to 0,0,0
+         */
+        BaseOdometry(): last_time_(ros::Time::now()) {}
 
-        OdometryMeasurement(Pose2D offset): offset_(offset), last_time_(ros::Time::now()) {}
+        /**
+         * @brief Initialize state with offset, usually if connection to base was reset
+         * @param offset Pose offset to use
+         */
+        BaseOdometry(Pose2D offset): offset_(offset), last_time_(ros::Time::now()) {}
 
         void updateWithAbsolute(Pose2D abs){
             updateWithRelative(abs - prev_);
@@ -192,7 +222,6 @@ private:
             return transform;
 
         }
-
 
         nav_msgs::Odometry getMessage(std::string robot_prefix){
 
@@ -249,7 +278,7 @@ private:
     ros::Publisher odom_pub_;
     ros::Subscriber cmd_sub_;
     ros::Timer odom_loop_;
-    OdometryMeasurement odom_measurement_;
+    BaseOdometry base_odom_;
 
     std::string robot_address_, robot_prefix_;
     int robot_port_;
