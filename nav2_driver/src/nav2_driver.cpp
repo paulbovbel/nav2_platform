@@ -81,8 +81,9 @@ protected:
         }
 
         //TODO
-        ROS_ERROR_STREAM("Failed to connect to Nav2 base on " << robot_address_ <<":"<< robot_port_);
-        throw std::runtime_error("Failed");
+        std::string message = "Failed to connect to Nav2 base";
+        ROS_ERROR_STREAM(message << " on " << robot_address_ <<":"<< robot_port_);
+        throw std::runtime_error(message);
 
     }
 
