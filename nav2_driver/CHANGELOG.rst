@@ -2,6 +2,9 @@
 Changelog for package nav2_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.3 (2014-04-16)
 ------------------
 * update cmakelists
