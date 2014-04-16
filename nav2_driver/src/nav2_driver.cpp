@@ -4,7 +4,7 @@
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_broadcaster.h>
 
-#include <nav2_driver/nav2remote/nav2remote.h>
+#include <nav2_driver/nav2remote.h>
 
 #include <boost/interprocess/smart_ptr/shared_ptr.hpp>
 
