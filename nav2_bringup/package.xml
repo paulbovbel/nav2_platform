@@ -12,8 +12,6 @@
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>nav2_driver</run_depend>
   <run_depend>nav2_navigation</run_depend>
-  <run_depend>hokuyo_node</run_depend>
-  <run_depend>depthimage_to_laserscan</run_depend>
 
   <export>
 

@@ -10,7 +10,9 @@
   <license>GPLv3</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>navigation</run_depend>
+  <run_depend>move_base</run_depend>
+  <run_depend>hokuyo_node</run_depend>
+  <run_depend>depthimage_to_laserscan</run_depend>
 
   <export>
 
