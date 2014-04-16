@@ -1,0 +1,3 @@
+[submodule "nav2_driver/include/nav2_driver/nav2remote"]
+	path = nav2_driver/include/nav2_driver/nav2remote
+	url = https://github.com/paulbovbel/nav2remote.git
