@@ -14,6 +14,17 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
 )
 
+execute_process(
+  COMMAND git rev-parse --show-toplevel
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_ROOT
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+execute_process(
+  COMMAND git submodule update --init
+  WORKING_DIRECTORY ${GIT_ROOT}
+)
+
 add_library(nav2remote include/${PROJECT_NAME}/nav2remote/nav2remote.cpp)
 
 add_executable(nav2_driver src/nav2_driver.cpp)
