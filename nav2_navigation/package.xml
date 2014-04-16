@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>nav2_navigation</name>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <description>ROS navigation config and launch files for Nav2 Robot Platform</description>
 
   <maintainer email="paul@bovbel.com">Paul Bovbel</maintainer>
