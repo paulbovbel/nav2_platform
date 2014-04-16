@@ -2,8 +2,8 @@
 Changelog for package nav2_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2014-04-16)
+------------------
 * readd submodule
 * fix build
 * remove submodule
