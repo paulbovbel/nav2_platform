@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(nav2_bringup)
 
-find_package(catkin REQUIRED COMPONENTS
-  nav2_driver
-  nav2_navigation
-)
+find_package(catkin)
 
 catkin_package()
 
-install(DIRECTORY launch/
+install(DIRECTORY launch
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
         PATTERN ".svn" EXCLUDE)
