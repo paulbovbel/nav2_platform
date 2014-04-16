@@ -2,6 +2,9 @@
 Changelog for package nav2_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.2 (2014-04-16)
 ------------------
 * fix dependencies in nav2_bringup

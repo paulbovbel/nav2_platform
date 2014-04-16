@@ -2,6 +2,12 @@
 Changelog for package nav2_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* update cmakelists
+* embed library nav2remote directly
+* Contributors: Paul Bovbel
+
 0.0.2 (2014-04-16)
 ------------------
 * readd submodule
