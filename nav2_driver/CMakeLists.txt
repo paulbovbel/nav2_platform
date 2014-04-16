@@ -14,7 +14,7 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
 )
 
-add_library(nav2remote include/nav2_driver/nav2remote/nav2remote.cpp)
+add_library(nav2remote src/nav2remote.cpp)
 
 add_executable(nav2_driver src/nav2_driver.cpp)
 target_link_libraries(nav2_driver nav2remote ${catkin_LIBRARIES})
