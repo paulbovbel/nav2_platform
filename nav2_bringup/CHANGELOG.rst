@@ -2,6 +2,11 @@
 Changelog for package nav2_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix dependencies in nav2_bringup
+* Contributors: Paul Bovbel
+
 0.0.1 (2014-04-15)
 ------------------
 * add port argument
