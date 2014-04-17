@@ -2,8 +2,8 @@
 Changelog for package nav2_navigation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2014-04-17)
+------------------
 * fix dependencies and building
 * Contributors: Paul Bovbel
 
