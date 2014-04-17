@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS geometry_msgs nav_msgs roscpp std_msgs t
 find_package(Boost REQUIRED COMPONENTS system)
 
 catkin_package(
+  INCLUDE_DIRS include
   CATKIN_DEPENDS geometry_msgs nav_msgs roscpp
 )
 

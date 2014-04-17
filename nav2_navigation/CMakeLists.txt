@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(nav2_navigation)
 
-find_package(catkin REQUIRED COMPONENTS
-  nav2_driver
-)
+find_package(catkin REQUIRED COMPONENTS)
 
 catkin_package()
 
