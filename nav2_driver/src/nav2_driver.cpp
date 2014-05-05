@@ -54,7 +54,8 @@ public:
 protected:
 
     /**
-     * @brief Establishes connection to Nav2 base controller, replacing any existing connection if necessary.
+     * @brief Establishes connection to Nav2 base controller on specified IP and port, replacing any existing
+     * connection if necessary. Throws std::runtime_error if cannot connect to base controller.
      */
     void connect(std::string robot_address, int robot_port){
 
@@ -68,8 +69,9 @@ protected:
             base_odom_ = BaseOdometry(offset);
         }
 
-        //attepmt to connect several times
-        for(int retry = 0; retry < 5; retry++){
+        //attempt to connect several times, if failed then die
+        int retry = 5;
+        while(retry-- > 0){
             try{
                 //leave address:port validation to Nav2Remote. Must use shared_ptr since constructor can throw expception
                 remote_ = boost::shared_ptr<Nav2Remote>(new Nav2Remote(robot_address.c_str(),robot_port));
