@@ -2,7 +2,7 @@
 <package>
   <name>nav2_platform</name>
   <version>0.0.6</version>
-  <description>ROS Metapackage containing all nodes, config, and launch files for Nav2 Robot Platform</description>
+  <description>ROS stack  containing all nodes, config, and launch files for Nav2 mobile robotics platform.</description>
 
   <maintainer email="paul@bovbel.com">Paul Bovbel</maintainer>
   <author email="paul@bovbel.com">Paul Bovbel</author>
