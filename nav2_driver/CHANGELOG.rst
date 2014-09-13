@@ -2,8 +2,8 @@
 Changelog for package nav2_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2014-09-13)
+------------------
 * Fix retry behaviour
 * Contributors: Paul Bovbel
 

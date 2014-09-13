@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>nav2_platform</name>
-  <version>0.0.6</version>
+  <version>0.0.7</version>
   <description>ROS stack  containing all nodes, config, and launch files for Nav2 mobile robotics platform.</description>
 
   <maintainer email="paul@bovbel.com">Paul Bovbel</maintainer>

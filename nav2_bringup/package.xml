@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>nav2_bringup</name>
-  <version>0.0.6</version>
+  <version>0.0.7</version>
   <description>ROS launch files for Nav2 Robot Platform bringup</description>
 
   <maintainer email="paul@bovbel.com">Paul Bovbel</maintainer>
